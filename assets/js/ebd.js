@@ -15,27 +15,40 @@ var doorWidth = 250;
 var doorHeight = 450;
 var doorSpacing = 70;
 
+var img = new Image();
+img.src = 'images/dungeon-wall-texture-seamless.png';
+var doorImage = new Image();
+doorImage.src = 'images/door_5_viewport.png';
+
+img.onload = drawBackground;
+
+function drawBackground(){
+    for (var w = 0; w < canvas.width; w += img.width /2){
+      for (var h=0; h< canvas.height; h += img.height /2)
+        context.drawImage(img,w,h);
+    }
+    redrawDoors();
+}
+
 var startingPos = (width - ((doorWidth * 3) + (doorSpacing * 2)))/2;
 var doors = [[startingPos,100,doorWidth,doorHeight],
   [startingPos + (doorWidth + doorSpacing),100,doorWidth,doorHeight],
   [startingPos+ (doorWidth * 2 + doorSpacing * 2),100,doorWidth,doorHeight]];
 
-redrawDoors();
-
 $('#gameArea').mousemove(doorHoverHandler);
 $('#gameArea').click(doorClickHandler);
 
 function redrawDoors(doorIndex){
-  context.fillRect(0,0,width,height);
+  //context.fillRect(0,0,width,height);
   context.save();
   context.strokeStyle="#FF0000";
-  console.dir(puzzles);
   if (doorIndex != null){
     context.strokeRect(doors[doorIndex][0], doors[doorIndex][1], doors[doorIndex][2], doors[doorIndex][3]);
   }
   else{
     for (var i = 0; i<doors.length; i++){
         context.strokeRect(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
+
         var pattern = i == correctDoor ? puzzles[level][1] : puzzles[level][0];
         drawPuzzle(doors[i][0]+(doorWidth/2), doors[i][1]+(doorHeight/2), doorWidth/2, doorHeight/2, pattern);
     }
@@ -71,6 +84,7 @@ function doorClickHandler(e){
   var x = e.pageX;
   var y = e.pageY;
   clearInterval(doorOpenAnimation);
+  drawBackground();
 
   for (var i=0; i<doors.length; i++){
     var xLeft = doors[i][0];
@@ -85,13 +99,15 @@ function doorClickHandler(e){
       context.strokeStyle = correctDoor == i ? "#0000FF" : "#FF0000";
       if (correctDoor == 1) level++;
       var j = 1;
-      //redrawDoors(i);
       doorOpenAnimation = setInterval(function(){
         j = j*1.1;
         context.strokeRect(doors[i][0]-j, doors[i][1]-j, doors[i][2]+j*2, doors[i][3]+j*2);
-        if (j >= 1000) {
+
+
+        if (j >= 2000) {
           clearInterval(this);
           context.restore();
+          drawBackground();
           redrawDoors();
         }
       },.5);
@@ -104,6 +120,7 @@ function doorClickHandler(e){
 
 function drawPuzzle(cx, cy, width, height, fillSequence){
   //context.clearRect(x,y,width,height);
+  //drawBackground();
   context.save();
   var nbr_circles = fillSequence.length;
 
