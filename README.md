@@ -1,0 +1,2 @@
+# EverybodyDies
+### a Sails application
