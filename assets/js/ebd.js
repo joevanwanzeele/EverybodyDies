@@ -57,12 +57,12 @@ function doorHoverHandler(e){
     if (x >= xLeft && x <= xRight && y >= yTop && y <= yBottom){
       clearInterval(doorOpenAnimation);
       redrawDoors();
-      canvas.save();
+      context.save();
       context.shadowBlur = 10;
       context.shadowColor = "#FF0000";
 
       context.strokeRect(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
-      canvas.restore();
+      context.restore();
     }
   }
 }
@@ -78,16 +78,22 @@ function doorClickHandler(e){
 
     var yTop = doors[i][1];
     var yBottom = doors[i][1] + doors[i][3];
-
+    context.save();
     if (x >= xLeft && x <= xRight && y >= yTop && y <= yBottom){
       context.shadowBlur = 10;
       context.shadowColor = correctDoor == i ? "#0000FF" : "#FF0000";
       context.strokeStyle = correctDoor == i ? "#0000FF" : "#FF0000";
+      if (correctDoor == 1) level++;
       var j = 1;
-      redrawDoors(i);
+      //redrawDoors(i);
       doorOpenAnimation = setInterval(function(){
         j = j*1.1;
         context.strokeRect(doors[i][0]-j, doors[i][1]-j, doors[i][2]+j*2, doors[i][3]+j*2);
+        if (j >= 1000) {
+          clearInterval(this);
+          context.restore();
+          redrawDoors();
+        }
       },.5);
 
       correctDoor = Math.floor(Math.random() * 2);
