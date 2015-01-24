@@ -1,3 +1,7 @@
+var puzzles;
+
+
+
 
 var width = window.innerWidth;
 var height = window.innerHeight;
@@ -35,7 +39,7 @@ function redrawDoors(doorIndex){
   else{
     for (var i = 0; i<doors.length; i++){
         context.strokeRect(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
-        var fillSequence = ['#00ff00', '#0000ff', '#00ff00', '#0000ff', '#00ff00', '#0000ff', '#00ff00', '#0000ff'];
+        var fillSequence = ['#ffff00', '#ffffff', '#00ff00', '#0000ff', '#00ff00', '#0000ff', '#00ff00', '#0000ff'];
         drawPuzzle(doors[i][0]+(doorWidth/2), doors[i][1]+(doorHeight/2), doorWidth/2, doorHeight/2, fillSequence);
     }
   }
@@ -92,7 +96,6 @@ function doorClickHandler(e){
 function drawPuzzle(cx, cy, width, height, fillSequence){
   //context.clearRect(x,y,width,height);
 
-  context.fillStyle='#fff';
   var nbr_circles = fillSequence.length;
 
   var lg_rad = (width/2) * .85;
@@ -100,13 +103,25 @@ function drawPuzzle(cx, cy, width, height, fillSequence){
   var sm_rad = (lg_circ / nbr_circles) / 2;
 
   for (var i = 1; i <= nbr_circles; ++i) {
+    var originalss = context.strokeStyle;
+    var originalShadowBlur = context.shadowBlur;
+    var originalShadowColor = context.shadowColor;
+
+    context.strokeStyle = '#000';
+    context.shadowBlur = 0;
+    context.shadowColor = "#000";
+
+    context.fillStyle = fillSequence[i-1];
     context.beginPath();
     var angle = i*2*Math.PI/nbr_circles;
     var x = cx + Math.cos(angle) * lg_rad;
     var y = cy + Math.sin(angle) * lg_rad;
     context.arc(x, y, sm_rad, 0, 2*Math.PI, false);
-    context.fillStyle = fillSequence[i];
     context.fill();
+
+    context.strokeStyle = originalss;
+    context.shadowBlur = originalShadowBlur;
+    context.shadowColor = originalShadowColor;
   }
   context.fillStyle='#000';
 }
