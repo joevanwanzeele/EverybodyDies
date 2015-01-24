@@ -29,7 +29,7 @@ function redrawDoors(doorIndex){
   context.fillRect(0,0,width,height);
   context.save();
   context.strokeStyle="#FF0000";
-
+  console.dir(puzzles);
   if (doorIndex != null){
     context.strokeRect(doors[doorIndex][0], doors[doorIndex][1], doors[doorIndex][2], doors[doorIndex][3]);
   }
