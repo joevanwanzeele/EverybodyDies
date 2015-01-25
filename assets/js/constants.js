@@ -15,12 +15,15 @@ var deathImages = [
 
 var victoryImage = 'images/rainbow.png';
 
-var DeathMessages = [
-  {text:"killed by a rouge lazer cat", image :""},
+var deathMessages =  [
+
+  "You are fried catnip!","OH NO! LAZER CAT!",
+  "Awwww, how cute. OH NO, I'm dead!", "This is why you should get a dog", "Here kitty kitty",
+  "Should have brought a lazer proof vest",
 
 ];
 
-var LiveMessages = [
+var liveMessages = [
 
   "You made it through alive, enjoy it while lasts","You made it, what do you want a pudding cup?",
   "Why are you still here?", "Good job, but maybe you should reconsider your life choices", "You all lived, NOW GO AWAY!",

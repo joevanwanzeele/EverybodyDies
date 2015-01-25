@@ -1,7 +1,7 @@
 var level = 0;
 var correctDoor = Math.floor(Math.random() * 2);
 var doorOpenAnimation;
-
+var remainingPlayers =8;
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -134,16 +134,29 @@ function doorClickHandler(e){
         context.strokeRect(doors[clickedDoor][0]-doorAnimationInterval, doors[clickedDoor][1]-doorAnimationInterval, doors[clickedDoor][2]+doorAnimationInterval*2, doors[clickedDoor][3]+doorAnimationInterval*2);
 
         if (doorAnimationInterval >= 2000) {
+          var message;
           clearInterval(doorOpenAnimation);
           clearInterval(drawPuzzles);
           if (correctDoor == clickedDoor) {
             level++;
+
+            message = liveMessages[Math.floor(Math.random() * 5)];
+          }
+          else
+          {
+            message = deathMessages[Math.floor(Math.random() * 6)];
+            remainingPlayers --;
           }
           doorAnimationInterval = 1;
           //context.restore();
+          
+
+
           correctDoor = Math.floor(Math.random() * 2);
           drawBackground();
-          redrawHud(LiveMessages[Math.floor(Math.random() * 5)],"8",level);
+
+
+          redrawHud(message,level);
         }
       },5);
     }
@@ -173,7 +186,7 @@ function drawPuzzle(cx, cy, width, height, pattern, rot){
   }
 }
 
-function redrawHud(message, remainingPlayers, level){
+function redrawHud(message, level){
  context.save();
 
  context.font = '25pt Calibri';
