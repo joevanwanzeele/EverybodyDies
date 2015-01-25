@@ -1,47 +1,74 @@
-var ebdGame = 
+var ebdGameClass = function() 
 {
 	
-    "self": this,
-	"Start": function () {
-		self.Sounds=["suspense.mp3","Jumpscare1.wav","Jumpscare2.wav","Foostep_Tile_Fadeout.wav","unlock.wav"];
-		self.Doors=[0,1,2]; //Netural, treasure, bad
-		self.LevelTimeRemaining = 10;
-		
+    var that = this;
 
-		self.SoundPlayer = function (soundIdx) {
+	that.Start= function () {
+		that.Sounds=["suspense.mp3","Jumpscare1.wav","Jumpscare2.wav","unlock.wav"];
+		that.Ambient = ["Foostep_Tile_Fadeout.wav"];
+		
+		that.LevelTimeRemaining = 10;
+		that.GameTimer = setInterval(that.DecTime, 1500);
+		that.PlayMusic();
+
+     }
+		that.SoundPlayer = function (soundIdx) {
 	
 			var sound = new Audio();
-			sound.src = '' +self.Sounds[soundIdx];
+			sound.src = '' +that.Sounds[soundIdx];
 			sound.play();	
 		}
 
-		self.PlayRandom = function () {
+		that.PlayRandom = function () {
+		
 			var sound = new Audio();
-			sound.src = this.Sounds[0];
+			sound.src = this.Sounds[Math.floor(Math.random() * that.Sounds.length-1)];
 			sound.play();
 		}
 
-		self.DecTime =  function() {
-			self.LevelTimeRemaining--;
-			console.log(self.LevelTimeRemaining);
+		that.DecTime =  function() {
 
-			if (self.LevelTimeRemaining==5) {
-				self.SoundPlayer(3)
+			that.LevelTimeRemaining--;
+
+			if (that.LevelTimeRemaining==5) {
+				that.PlayAmbient();
 			}
-			if  (self.LevelTimeRemaining==0) {
+
+			if  (that.LevelTimeRemaining==0) {
 				console.log("GAME OVER!");
 				
-				clearInterval(self.GameTimer);
-				self.SoundPlayer(2);
+				clearInterval(that.GameTimer);
+				that.SoundPlayer(2);
+				
+				that.AmbientPlayer.loop ="";
 			}
+			
 		}
 		
-		self.ChooseDoor = function (doorIdx) {
-			self.SoundPlayer(4);
+		that.ChooseDoor = function (doorIdx) {
+			that.SoundPlayer(4);
 		}
 
-		self.GameTimer = setInterval(self.DecTime, 1500);
-	}
+		that.PlayMusic = function() {
+			that.Music = new Audio();
+			that.Music.src = "Everybody_Dies_Loop.wav";
+			that.Music.loop = "loop";
+			that.Music.play();
+		}
+		
+		that.PlayAmbient = function () {
+			that.AmbientPlayer = new Audio();
+			var idx = Math.floor(Math.random() * that.Ambient.length) ;
+			console.log(idx);
+			that.AmbientPlayer.src = that.Ambient[idx];
+			that.AmbientPlayer.loop = "loop";
+			
+			that.AmbientPlayer.play();
+		}
+
+		return that;
+
+	
 } 
 
-ebdGame.Start();
+var ebdGame = ebdGameClass();
