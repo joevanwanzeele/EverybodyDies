@@ -67,7 +67,7 @@ function drawBackground(){
 
 var img = new Image();
 img.src = 'images/dungeon-wall-texture-seamless.png';
-img.onload = function(){drawBackground();redrawHud("Welcome to Everybody dies","8",level);};
+img.onload = function(){drawBackground();redrawHud("Welcome to Everybody dies",level);};
 
 var doorImage = new Image();
 doorImage.src = 'images/trans_door.png';
@@ -186,6 +186,13 @@ function drawPuzzle(cx, cy, width, height, pattern, rot){
   }
 }
 
+
+var playerWidth = 100;
+var playerHeight = 100;
+var playerSpacing = 50;
+
+var startingPos = 1000;
+
 function redrawHud(message, level){
  context.save();
 
@@ -193,8 +200,34 @@ function redrawHud(message, level){
  context.fillStyle = 'yellow';
  context.fillText(message, 100, 40);
 
- context.fillText("Level : " + level.toString(), 40, 700);
+ context.fillText("Level : " + level.toString(), 100, 700);
 
  context.fillText("Remaining Players : "+ remainingPlayers, 1000, 40);
+
+
+for(var i =0; i< remainingPlayers; i++)
+{
+    var livePlayerImage = new Image();
+    livePlayerImage.src = 'images/deceased_party_member_360.png';
+    context.save();
+    context.shadowBlur = 0;
+    context.shadowColor = null;
+    context.strokeStyle = null;
+    context.drawImage(livePlayerImage, 300, 600, 100, 100);
+    context.restore();
+
+
+}
+for(var j =0;j< startingNumPlayers- remainingPlayers; j++)
+{
+    var deadPlayerImage = new Image();
+    deadPlayerImage.src = 'images/living_party_member_360.png'
+    context.save();
+    context.shadowBlur = 0;
+    context.shadowColor = null;
+    context.strokeStyle = null;
+    context.drawImage(deadPlayerImage, 200, 600, 100, 100);
+    context.restore();
+}
  context.restore();
 }
