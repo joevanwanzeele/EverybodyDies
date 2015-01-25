@@ -15,23 +15,9 @@ var doorWidth = 300;
 var doorHeight = 450;
 var doorSpacing = 100;
 
-var img = new Image();
-img.src = 'images/dungeon-wall-texture-seamless.png';
-var doorImage = new Image();
-doorImage.src = 'images/transparent_door.png';
-
-img.onload = drawBackground;
-
-function drawBackground(){
-    for (var w = 0; w < canvas.width; w += img.width /2){
-      for (var h=0; h< canvas.height; h += img.height /2)
-        context.drawImage(img,w,h);
-    }
-    redrawDoors();
-}
-
 var startingPos = (width - ((doorWidth * 3) + (doorSpacing * 2)))/2;
-var doors = [[startingPos,100,doorWidth,doorHeight],
+var doors = [
+  [startingPos,100,doorWidth,doorHeight],
   [startingPos + (doorWidth + doorSpacing),100,doorWidth,doorHeight],
   [startingPos+ (doorWidth * 2 + doorSpacing * 2),100,doorWidth,doorHeight]];
 
@@ -42,8 +28,10 @@ function redrawDoors(doorIndex){
   //context.fillRect(0,0,width,height);
   context.save();
   context.strokeStyle="#FF0000";
-  if (doorIndex != null){
-    context.strokeRect(doors[doorIndex][0], doors[doorIndex][1], doors[doorIndex][2], doors[doorIndex][3]);
+  if (doorIndex != null && !isNaN(doorIndex)){
+    console.dir(doorIndex);
+    context.drawImage(doorImage, doors[doorIndex][0], doors[doorIndex][1], doors[doorIndex][2], doors[doorIndex][3]);
+    //context.strokeRect(doors[doorIndex][0], doors[doorIndex][1], doors[doorIndex][2], doors[doorIndex][3]);
   }
   else{
     for (var i = 0; i<doors.length; i++){
@@ -55,6 +43,22 @@ function redrawDoors(doorIndex){
   }
   context.restore();
 }
+
+function drawBackground(){
+    for (var w = 0; w < canvas.width; w += img.width /2){
+      for (var h=0; h< canvas.height; h += img.height /2)
+        context.drawImage(img,w,h);
+    }
+    redrawDoors();
+};
+
+var img = new Image();
+img.src = 'images/dungeon-wall-texture-seamless.png';
+img.onload = drawBackground;
+
+var doorImage = new Image();
+doorImage.src = 'images/trans_door.png';
+doorImage.onload = redrawDoors;
 
 function doorHoverHandler(e){
   var x = e.pageX;
@@ -72,8 +76,8 @@ function doorHoverHandler(e){
 
       //redrawDoors();
       context.save();
-      context.shadowBlur = 10;
-      context.shadowColor = "#FF0000";
+      //context.shadowBlur = 10;
+      //context.shadowColor = "#FF0000";
 
       //context.strokeRect(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
       context.restore();
@@ -96,14 +100,16 @@ function doorClickHandler(e){
     context.save();
     if (x >= xLeft && x <= xRight && y >= yTop && y <= yBottom){
       context.shadowBlur = 10;
+
       context.shadowColor = correctDoor == i ? "#0000FF" : "#FF0000";
       context.strokeStyle = correctDoor == i ? "#0000FF" : "#FF0000";
-      if (correctDoor == 1) level++;
+      if (correctDoor == i) level++;
+
+
       var j = 1;
       doorOpenAnimation = setInterval(function(){
         j = j*1.1;
         context.strokeRect(doors[i][0]-j, doors[i][1]-j, doors[i][2]+j*2, doors[i][3]+j*2);
-
 
         if (j >= 2000) {
           clearInterval(this);
@@ -126,6 +132,7 @@ function drawPuzzle(cx, cy, width, height, fillSequence){
 
 
   },50);
+
   context.save();
   var nbr_circles = fillSequence.length;
 
