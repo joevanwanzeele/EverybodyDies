@@ -52,7 +52,6 @@ function redrawDoors(){
 }
 
 function drawBackground(){
-
   context.save();
   context.shadowBlur = 0;
   context.shadowColor = null;
@@ -81,12 +80,14 @@ function drawJustBackground(){
 
 var img = new Image();
 img.src = 'images/dungeon-wall-texture-seamless.png';
-$(document).onload =function(){
 
-  //img.onload = function(){;;};
+var livePlayerImage = new Image();
+livePlayerImage.src = 'images/living_party_member_360.png';
+
+window.onload = function(){
   drawBackground();
   redrawHud("Welcome to Everybody dies",level);
-};
+}
 
 var doorImage = new Image();
 doorImage.src = 'images/trans_door.png';
@@ -157,28 +158,30 @@ function doorClickHandler(e){
           doorAnimationInterval = doorAnimationInterval*1.1;
 
           context.shadowBlur = 10;
-          context.shadowColor = correctDoor == clickedDoor ? "#0000FF" : "#FF0000";
-          context.strokeStyle = correctDoor == clickedDoor ? "#0000FF" : "#FF0000";
+          //context.shadowColor = correctDoor == clickedDoor ? "#0000FF" : "#FF0000";
+          //context.strokeStyle = correctDoor == clickedDoor ? "#0000FF" : "#FF0000";
           context.drawImage(choiceImage, doors[clickedDoor][0]-doorAnimationInterval, doors[clickedDoor][1]-doorAnimationInterval, doors[clickedDoor][2]+doorAnimationInterval*2, doors[clickedDoor][3]+doorAnimationInterval*2);
 
-          context.strokeRect(doors[clickedDoor][0]-doorAnimationInterval, doors[clickedDoor][1]-doorAnimationInterval, doors[clickedDoor][2]+doorAnimationInterval*2, doors[clickedDoor][3]+doorAnimationInterval*2);
+          //context.strokeRect(doors[clickedDoor][0]-doorAnimationInterval, doors[clickedDoor][1]-doorAnimationInterval, doors[clickedDoor][2]+doorAnimationInterval*2, doors[clickedDoor][3]+doorAnimationInterval*2);
 
           if (doorAnimationInterval >= 2000) {
             var message;
             clearInterval(doorOpenAnimation);
 
-<<<<<<< HEAD
             if (correctDoor == clickedDoor) {
-              //if (level == 50) endGame(true);
-
+              if (level == 50) endGame(true);
               level++;
-
               message = liveMessages[Math.floor(Math.random() * 5)];
             }
             else
             {
               message = deathMessages[Math.floor(Math.random() * 6)];
               remainingPlayers --;
+              if (remainingPlayers <= 0) {
+                endGame(false);
+                return;
+              }
+
             }
             doorAnimationInterval = 1;
             //context.restore()
@@ -187,25 +190,6 @@ function doorClickHandler(e){
             redrawHud(message,level);
           }
         },5);
-=======
-            message = liveMessages[Math.floor(Math.random() * 5)];
-          }
-          else
-          {
-            message = deathMessages[Math.floor(Math.random() * 6)];
-            remainingPlayers --;
-            }
-
-          }
-          doorAnimationInterval = 1;
-          //context.restore()
-          correctDoor = Math.floor(Math.random() * 2);
-          drawBackground();
-          redrawHud(message,level);
-         
-        }
-      },5);
->>>>>>> d07ca6d12cb8d638aa1205212a8353b711a43fb6
     }
 
   }
@@ -254,9 +238,6 @@ function redrawHud(message, level){
 
     for(var i =0; i< remainingPlayers; i++)
     {
-        var livePlayerImage = new Image();
-        livePlayerImage.src = 'images/living_party_member_360.png';
-
         context.shadowBlur = 0;
         context.shadowColor = null;
         context.strokeStyle = null;
@@ -284,38 +265,90 @@ function redrawHud(message, level){
 
 function endGame(didTheyWin)
 {
-  console.log("endGame");
   context.save();
   clearInterval(drawPuzzles);
-  drawJustBackground(); 
+  drawJustBackground();
   (didTheyWin===true) ? DrawWinScreen() : DrawLoseScreen();
   context.restore();
 }
 
-function DrawWinScreen() 
+function DrawWinScreen()
 {
     console.log("In drawWin");
 
     var endImage = new Image();
     endImage.src = 'images/win.png';
-    
+
     context.shadowBlur = 0;
     context.shadowColor = null;
     context.strokeStyle = null;
     context.drawImage(endImage, 10, 600, 100, 100);
-
-
 }
 
-function DrawLoseScreen() 
+function DrawLoseScreen()
 {
   console.log("In drawLose");
 
     var endImage = new Image();
     endImage.src = 'images/lose.png';
-    
+
     context.shadowBlur = 0;
     context.shadowColor = null;
     context.strokeStyle = null;
-    context.drawImage(endImage, 10, 600, 100, 100);  
+    context.drawImage(endImage, 10, 600, 100, 100);
 }
+
+function endGame(didTheyWin)
+{
+ console.log("endGame");
+ context.save();
+ clearInterval(drawPuzzles);
+
+ drawJustBackground();
+
+ (didTheyWin===true) ? DrawWinScreen() : DrawLoseScreen();
+ context.restore();
+
+ remainingPlayers=startingNumPlayers;
+}
+
+function DrawWinScreen()
+{
+   console.log("In drawWin");
+
+   var endImage = new Image();
+   endImage.src = 'images/win.jpg';
+
+   context.shadowBlur = 0;
+   context.shadowColor = null;
+   context.strokeStyle = null;
+   context.drawImage(endImage, 10, 10);
+}
+
+function DrawLoseScreen()
+{
+ console.log("In drawLose");
+
+   var endImage = new Image();
+   endImage.src = 'images/lose.jpg';
+
+   context.shadowBlur = 0;
+   context.shadowColor = null;
+   context.strokeStyle = null;
+
+   context.drawImage(endImage, 10, 10);
+   context.drawImage(endImage, 10, 600, 100, 100);
+}
+
+function drawJustBackground(){
+ context.save();
+ context.shadowBlur = 0;
+ context.shadowColor = null;
+ context.strokeStyle = null;
+
+ for (var w = 0; w < canvas.width; w += img.width /2){
+   for (var h=0; h< canvas.height; h += img.height /2)
+     context.drawImage(img,w,h);
+ }
+ context.restore();
+};

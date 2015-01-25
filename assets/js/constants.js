@@ -13,7 +13,7 @@ var players = [
 ];
 
 var deathImages = [
-  'images/cat1.jpg'
+  'images/cat1.png'
 ];
 
 var victoryImage = 'images/rainbow.png';
