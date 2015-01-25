@@ -1,4 +1,5 @@
 var startingNumPlayers = 8;
+var remainingPlayers = 8;
 
 var players = [
   {Name: "Tyler", Alive: true},
