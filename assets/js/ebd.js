@@ -115,7 +115,14 @@ function doorClickHandler(e){
 
 
       var doorAnimationInterval = 1;
-      doorOpenAnimation = setInterval(function(){
+      if (correctDoor == clickedDoor) {
+         ebdGame.PlayRandomWin();
+
+       } else {
+          ebdGame.PlayRandom();
+      }
+      doorOpenAnimation = setInterval( 
+        function()  {
         var choiceImage = new Image();
 
         choiceImage.src = deathImages[0];
