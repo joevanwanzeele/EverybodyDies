@@ -67,8 +67,13 @@ function drawBackground(){
 
 var img = new Image();
 img.src = 'images/dungeon-wall-texture-seamless.png';
-img.onload = function(){drawBackground();redrawHud("Welcome to Everybody dies",level);};
+window.onload =function()
+{
 
+//img.onload = function(){;;};
+drawBackground();
+redrawHud("Welcome to Everybody dies",level);
+};
 var doorImage = new Image();
 doorImage.src = 'images/trans_door.png';
 //doorImage.onload = redrawDoors;
@@ -155,14 +160,9 @@ function doorClickHandler(e){
             remainingPlayers --;
           }
           doorAnimationInterval = 1;
-          //context.restore();
-          
-
-
+          //context.restore()
           correctDoor = Math.floor(Math.random() * 2);
           drawBackground();
-
-
           redrawHud(message,level);
         }
       },5);
@@ -210,31 +210,32 @@ function redrawHud(message, level){
  context.fillText("Level : " + level.toString(), 100, 700);
 
  context.fillText("Remaining Players : "+ remainingPlayers, 1000, 40);
-
+var currentPosition = 400;
 
 for(var i =0; i< remainingPlayers; i++)
 {
     var livePlayerImage = new Image();
-    livePlayerImage.src = 'images/deceased_party_member_360.png';
-    context.save();
+    livePlayerImage.src = 'images/living_party_member_360.png';
+    
     context.shadowBlur = 0;
     context.shadowColor = null;
     context.strokeStyle = null;
-    context.drawImage(livePlayerImage, 300, 600, 100, 100);
-    context.restore();
-
+    context.drawImage(livePlayerImage, currentPosition, 600, 100, 100);
+    currentPosition  += 110;
+    
 
 }
 for(var j =0;j< startingNumPlayers- remainingPlayers; j++)
 {
     var deadPlayerImage = new Image();
-    deadPlayerImage.src = 'images/living_party_member_360.png'
-    context.save();
+    deadPlayerImage.src = 'images/deceased_party_member_360.png'
+   
     context.shadowBlur = 0;
     context.shadowColor = null;
     context.strokeStyle = null;
-    context.drawImage(deadPlayerImage, 200, 600, 100, 100);
-    context.restore();
+    context.drawImage(deadPlayerImage, currentPosition, 600, 100, 100);
+    currentPosition += 110;
+   
 }
  context.restore();
 }
