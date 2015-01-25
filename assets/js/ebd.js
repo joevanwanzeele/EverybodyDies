@@ -9,8 +9,9 @@ var canvas = document.getElementById('gameArea');
 canvas.width = width;
 canvas.height = height;
 
+var clickedDoor = -1;
 
-var activePuzzles = [null,null,null];
+var drawPuzzles;
 
 var context = canvas.getContext('2d');
 var doorWidth = 300;
@@ -29,31 +30,27 @@ $('#gameArea').click(doorClickHandler);
 function redrawDoors(doorIndex){
   //context.fillRect(0,0,width,height);
   context.save();
-  context.strokeStyle="#FF0000";
-  if (doorIndex != null && !isNaN(doorIndex)){
-    //console.dir(doorIndex);
-    context.drawImage(doorImage, doors[doorIndex][0], doors[doorIndex][1], doors[doorIndex][2], doors[doorIndex][3]);
-    //context.strokeRect(doors[doorIndex][0], doors[doorIndex][1], doors[doorIndex][2], doors[doorIndex][3]);
-  }
-  else{
-    for (var i = 0; i<doors.length; i++){
-        //context.strokeRect(doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
-        context.drawImage(doorImage, doors[i][0], doors[i][1], doors[1][2], doors[i][3]);
-        var pattern = i == correctDoor ? puzzles[level][1] : puzzles[level][0];
-        drawPuzzle(doors[i][0]+(doorWidth/2), doors[i][1]+(doorHeight/2), doorWidth/2, doorHeight/2, pattern, i);
-        //for (var j = 0; j<activePuzzles.length; j++){
-        //clearInterval(activePuzzles[i]);
+  var rot = 0;
+  var drawPuzzles = setInterval(function(){
+    for (var i=0; i<3; i++){
+        context.drawImage(doorImage, doors[i][0], doors[i][1], doors[i][2], doors[i][3]);
+        var pattern = i == correctDoor ? puzzles[level][0] : puzzles[level][1];
+        drawPuzzle(doors[i][0]+(doorWidth/2), doors[i][1]+(doorHeight/2), doorWidth/2, doorHeight/2, pattern, rot);
+        rot += .05;
     }
-  }
+  }, 100);
+
   context.restore();
 }
 
 function drawBackground(){
-    for (var w = 0; w < canvas.width; w += img.width /2){
-      for (var h=0; h< canvas.height; h += img.height /2)
-        context.drawImage(img,w,h);
-    }
-    redrawDoors();
+  clearInterval(drawPuzzles);
+
+  for (var w = 0; w < canvas.width; w += img.width /2){
+    for (var h=0; h< canvas.height; h += img.height /2)
+      context.drawImage(img,w,h);
+  }
+  redrawDoors();
 };
 
 var img = new Image();
@@ -101,66 +98,53 @@ function doorClickHandler(e){
     var yBottom = doors[i][1] + doors[i][3];
     context.save();
     if (x >= xLeft && x <= xRight && y >= yTop && y <= yBottom){
+      var clickedDoor = i;
       context.shadowBlur = 10;
       context.shadowColor = correctDoor == i ? "#0000FF" : "#FF0000";
       context.strokeStyle = correctDoor == i ? "#0000FF" : "#FF0000";
 
-      if (correctDoor == i) level++;
+      if (correctDoor == clickedDoor) {
+        level++;
+      }
 
-      var j = 1;
+      var doorAnimationInterval = 1;
       doorOpenAnimation = setInterval(function(){
-        j = j*1.1;
-        context.strokeRect(doors[i][0]-j, doors[i][1]-j, doors[i][2]+j*2, doors[i][3]+j*2);
+        doorAnimationInterval = doorAnimationInterval*1.1;
+        context.strokeRect(doors[clickedDoor][0]-doorAnimationInterval, doors[clickedDoor][1]-doorAnimationInterval, doors[clickedDoor][2]+doorAnimationInterval*2, doors[clickedDoor][3]+doorAnimationInterval*2);
 
-        if (j >= 2000) {
-          clearInterval(this);
-          context.restore();
+        if (doorAnimationInterval >= 2000) {
+          clearInterval(doorOpenAnimation);
           drawBackground();
+          clearInterval(drawPuzzles);
+          doorAnimationInterval = 1;
         }
       },5);
 
       correctDoor = Math.floor(Math.random() * 2);
-      return;
     }
   }
 }
 
-function drawPuzzle(cx, cy, width, height, pattern, door){
-  //context.clearRect(x,y,width,height);
-  //drawBackground();
-  if (door) {
-    clearInterval(activePuzzles[door]);
-  }
-
-  var rot = 0;
+function drawPuzzle(cx, cy, width, height, pattern, rot){
   var nbr_circles = pattern.length;
-
   var lg_rad = (width/2) * .85;
   var lg_circ = 2*Math.PI*lg_rad;
   var sm_rad = (lg_circ / nbr_circles) / 2;
-//console.dir(fillSequence);
-  activePuzzles[door] = setInterval(function(){
 
-  redrawDoors(door);
-    //console.dir(rot);
-    for (var i = 1; i <= nbr_circles; ++i) {
-      context.save();
-      context.strokeStyle = '#000';
-      context.shadowBlur = 5;
-      context.shadowColor = "#000";
+  context.save();
 
-      context.fillStyle = pattern[i-1];
-      context.beginPath();
-      var angle = (i*2*Math.PI/nbr_circles) + rot;
-      var x = cx + Math.cos(angle) * lg_rad;
-      var y = cy + Math.sin(angle) * lg_rad;
-      context.arc(x, y, sm_rad, 0, 2*Math.PI, false);
-      context.fill();
-      context.restore();
-    }
+  for (var i = 1; i <= nbr_circles; ++i) {
+    context.strokeStyle = '#000';
+    context.shadowBlur = 5;
+    context.shadowColor = "#000";
 
-    rot += .08;
-  },100);
-
-
+    context.fillStyle = pattern[i-1];
+    context.beginPath();
+    var angle = (i*2*Math.PI/nbr_circles) + rot;
+    var x = cx + Math.cos(angle) * lg_rad;
+    var y = cy + Math.sin(angle) * lg_rad;
+    context.arc(x, y, sm_rad, 0, 2*Math.PI, false);
+    context.fill();
+  }
+  context.restore();
 }
