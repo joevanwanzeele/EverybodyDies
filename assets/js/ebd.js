@@ -116,11 +116,20 @@ function doorClickHandler(e){
 
       var doorAnimationInterval = 1;
       doorOpenAnimation = setInterval(function(){
+        var choiceImage = new Image();
+
+        choiceImage.src = deathImages[0];
+
+        if (correctDoor == clickedDoor) {
+            choiceImage.src = victoryImage;
+        }
+
         doorAnimationInterval = doorAnimationInterval*1.1;
 
         context.shadowBlur = 10;
         context.shadowColor = correctDoor == clickedDoor ? "#0000FF" : "#FF0000";
         context.strokeStyle = correctDoor == clickedDoor ? "#0000FF" : "#FF0000";
+        context.drawImage(choiceImage, doors[clickedDoor][0]-doorAnimationInterval, doors[clickedDoor][1]-doorAnimationInterval, doors[clickedDoor][2]+doorAnimationInterval*2, doors[clickedDoor][3]+doorAnimationInterval*2);
 
         context.strokeRect(doors[clickedDoor][0]-doorAnimationInterval, doors[clickedDoor][1]-doorAnimationInterval, doors[clickedDoor][2]+doorAnimationInterval*2, doors[clickedDoor][3]+doorAnimationInterval*2);
 

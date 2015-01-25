@@ -9,6 +9,12 @@ var players = [
   {Name: "Alice", Alive: true},
 ];
 
+var deathImages = [
+  'images/cat1.jpg'
+];
+
+var victoryImage = 'images/rainbow.png';
+
 var DeathMessages = [
   {text:"killed by a rouge lazer cat", image :""},
 
