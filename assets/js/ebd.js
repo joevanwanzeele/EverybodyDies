@@ -112,7 +112,7 @@ function doorClickHandler(e){
     if (x >= xLeft && x <= xRight && y >= yTop && y <= yBottom){
       clickedDoor = i;
       context.save();
-
+      clearInterval(drawPuzzles);
 
       var doorAnimationInterval = 1;
       doorOpenAnimation = setInterval(function(){
@@ -135,7 +135,7 @@ function doorClickHandler(e){
 
         if (doorAnimationInterval >= 2000) {
           clearInterval(doorOpenAnimation);
-          clearInterval(drawPuzzles);
+
           if (correctDoor == clickedDoor) {
             level++;
           }
