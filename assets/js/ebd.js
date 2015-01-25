@@ -1,7 +1,7 @@
 var level = 0;
 var correctDoor = Math.floor(Math.random() * 2);
 var doorOpenAnimation;
-
+var remainingPlayers =8;
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -67,8 +67,13 @@ function drawBackground(){
 
 var img = new Image();
 img.src = 'images/dungeon-wall-texture-seamless.png';
-img.onload = function(){drawBackground();redrawHud("Welcome to Everybody dies","8",level);};
+window.onload =function()
+{
 
+//img.onload = function(){;;};
+drawBackground();
+redrawHud("Welcome to Everybody dies",level);
+};
 var doorImage = new Image();
 doorImage.src = 'images/trans_door.png';
 //doorImage.onload = redrawDoors;
@@ -115,7 +120,14 @@ function doorClickHandler(e){
       clearInterval(drawPuzzles);
 
       var doorAnimationInterval = 1;
-      doorOpenAnimation = setInterval(function(){
+      if (correctDoor == clickedDoor) {
+         ebdGame.PlayRandomWin();
+
+       } else {
+          ebdGame.PlayRandom();
+      }
+      doorOpenAnimation = setInterval( 
+        function()  {
         var choiceImage = new Image();
 
         choiceImage.src = deathImages[0];
@@ -134,16 +146,24 @@ function doorClickHandler(e){
         context.strokeRect(doors[clickedDoor][0]-doorAnimationInterval, doors[clickedDoor][1]-doorAnimationInterval, doors[clickedDoor][2]+doorAnimationInterval*2, doors[clickedDoor][3]+doorAnimationInterval*2);
 
         if (doorAnimationInterval >= 2000) {
+          var message;
           clearInterval(doorOpenAnimation);
 
           if (correctDoor == clickedDoor) {
             level++;
+
+            message = liveMessages[Math.floor(Math.random() * 5)];
+          }
+          else
+          {
+            message = deathMessages[Math.floor(Math.random() * 6)];
+            remainingPlayers --;
           }
           doorAnimationInterval = 1;
-          //context.restore();
+          //context.restore()
           correctDoor = Math.floor(Math.random() * 2);
           drawBackground();
-          redrawHud(LiveMessages[Math.floor(Math.random() * 5)],"8",level);
+          redrawHud(message,level);
         }
       },5);
     }
@@ -173,15 +193,49 @@ function drawPuzzle(cx, cy, width, height, pattern, rot){
   }
 }
 
-function redrawHud(message, remainingPlayers, level){
+
+var playerWidth = 100;
+var playerHeight = 100;
+var playerSpacing = 50;
+
+var startingPos = 1000;
+
+function redrawHud(message, level){
  context.save();
 
  context.font = '25pt Calibri';
  context.fillStyle = 'yellow';
  context.fillText(message, 100, 40);
 
- context.fillText("Level : " + level.toString(), 40, 700);
+ context.fillText("Level : " + level.toString(), 100, 700);
 
  context.fillText("Remaining Players : "+ remainingPlayers, 1000, 40);
+var currentPosition = 400;
+
+for(var i =0; i< remainingPlayers; i++)
+{
+    var livePlayerImage = new Image();
+    livePlayerImage.src = 'images/living_party_member_360.png';
+    
+    context.shadowBlur = 0;
+    context.shadowColor = null;
+    context.strokeStyle = null;
+    context.drawImage(livePlayerImage, currentPosition, 600, 100, 100);
+    currentPosition  += 110;
+    
+
+}
+for(var j =0;j< startingNumPlayers- remainingPlayers; j++)
+{
+    var deadPlayerImage = new Image();
+    deadPlayerImage.src = 'images/deceased_party_member_360.png'
+   
+    context.shadowBlur = 0;
+    context.shadowColor = null;
+    context.strokeStyle = null;
+    context.drawImage(deadPlayerImage, currentPosition, 600, 100, 100);
+    currentPosition += 110;
+   
+}
  context.restore();
 }
